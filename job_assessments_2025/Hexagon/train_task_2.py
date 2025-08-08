@@ -76,6 +76,8 @@ class Carriage(Passenger):
 coach_A = Carriage("None","None","None","A","cube",[5],400) #the 3 Nones are because we dont want to override the passenger inputs
 print(sum(Carriage.all_coach_mass))
 
+##
+
 
 
 
