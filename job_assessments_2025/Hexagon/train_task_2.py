@@ -5,7 +5,7 @@ class Passenger:
         self.p_mass = p_mass
         self.lug_mass = lug_mass
 
-    def p_and_lug_mass(self):
+    def p_and_lug_mass(self): #passenger and luggage mass
         return self.p_mass + self.lug_mass
 
 
@@ -15,20 +15,22 @@ class Carriage:
         self.c_fixed_mass = c_fixed_mass
         self.shape = shape
         self.dims = dims
-        self.passengers = []
+        self.passengers = [] #initialise list for the passenger details
 
-    def add_passenger(self, passenger):
-        self.passengers.append(passenger)
+    def add_passenger(self, passenger): #add the passenger mass and lug mass to this carriage 
+        self.passengers.append(passenger) #passenger is an object and self.passengers is a list of objects
 
-    def c_p_and_lug_mass(self):
-        p_and_lug_mass_this_c = sum(p.p_and_lug_mass() for p in self.passengers)
+    def c_p_and_lug_mass(self): #calc the total coach mass (fixed coach mass + passenger masses + luggage masses)
+        p_and_lug_mass_this_c = 0
+        for p in self.passengers:
+            p_and_lug_mass_this_c += p.p_and_lug_mass()
         return self.c_fixed_mass + p_and_lug_mass_this_c
 
-    def lug_mass_this_carriage(self):
+    def lug_mass_this_carriage(self): #the total mass of all the luggages in this coach
         lug_mass_this_c = sum(p.lug_mass for p in self.passengers)
         return lug_mass_this_c 
 
-    def v_this_carriage(self):
+    def v_this_carriage(self): #find the volume of this coach
         if self.shape == "cylinder": # format for specifying "cylinder": [radius,length]
             radius = self.dims[0]
             length = self.dims[1]
@@ -53,20 +55,20 @@ class Carriage:
 
 class Train:
     def __init__(self,e_mass):
-        self.e_mass = e_mass
-        self.carriages = []
+        self.e_mass = e_mass #the engine mass
+        self.carriages = [] #initialise list for the carriage details
 
     def add_carriage(self, carriage):
-        self.carriages.append(carriage)
+        self.carriages.append(carriage) #add the carriage onto the train
 
-    def total_train_mass(self):
+    def total_train_mass(self): #calc the total train mass (engine mass + (coach fixed, passenger and luggage) masses for each coach)
         return self.e_mass + sum(c.c_p_and_lug_mass() for c in self.carriages)
 
-    def mass_and_vol_each_c(self):
+    def mass_and_vol_each_c(self): 
         #dict comprehension where the coach letter is the key, and the coach mass and volume are made into a string for each coach 
         return {c.letter: f"mass={c.c_p_and_lug_mass()}kg, volume={c.v_this_carriage()}m^3" for c in self.carriages}
 
-    def total_train_lug_mass(self):
+    def total_train_lug_mass(self): #sum all of the luggage masses across all carriages
         return sum(c.lug_mass_this_carriage() for c in self.carriages)
         
 
@@ -80,7 +82,7 @@ cA = Carriage("A",1000,"cylinder",[3,7])
 cB = Carriage("B",1200,"cuboid",[3,6,2])
 
 # Add passengers to carriages
-cA.add_passenger(p1)
+cA.add_passenger(p1) #we can have an object as an argument of a function for a different object??
 cA.add_passenger(p2)
 cB.add_passenger(p3)
 
@@ -89,10 +91,9 @@ train = Train(800)
 train.add_carriage(cA)
 train.add_carriage(cB)
 
-#prints
+######print the masses and volumes
 print("Total luggage mass: ",train.total_train_lug_mass())
 print("Total train mass:", train.total_train_mass())
-
 coach_chosen="B" #what coach to find the mass and volume of
 print(f"Mass and volume for coach",coach_chosen,':',train.mass_and_vol_each_c()[coach_chosen])
 
